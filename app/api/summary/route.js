@@ -23,11 +23,11 @@ export async function POST(request) {
             temperature: 0.3,
         });
 
-    if (!response.body || !response.summary) {
-      throw new Error('Invalid response structure from Cohere API');
+    if (!response || !response.summary) {
+      throw new Error('Invalid or missing summary in Cohere API response');
     }
 
-    return Response.json(response.summary);
+    return Response.json({ summary: response.summary });
   } catch (error) {
     console.error('Error in POST /api/summary:', error);
     return Response.json({ error: 'Internal Server Error', details: error.message });

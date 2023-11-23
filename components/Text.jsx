@@ -6,35 +6,42 @@ import Link from 'next/link';
 export const Text = () => {
   const [text, setText] = useState('');
   const [summary, setSummary] = useState('');
+  const [loading, setLoading] = useState(false)
 
   const handleTextChange = (event) => {
     setText(event.target.value);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
-
-    try {
-
-      const response = await fetch('/api/summary',
-       {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: text }), 
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    e.preventDefault();
+  
+    // Set loading to true, but using a setTimeout to ensure rendering
+    setLoading(true);
+  
+    setTimeout(async () => {
+      try {
+        const response = await fetch('/api/summary', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: text }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        setSummary(data.summary);
+      } catch (error) {
+        console.error('There was an error summarizing the text', error);
+      } finally {
+        setLoading(false);
       }
-
-      const data = await response.json();
-      setSummary(data.summary); // Assuming your API responds with a JSON containing the summary
-    } catch (error) {
-      console.error('There was an error summarizing the text', error);
-    }
+    }, 0); // Using a timeout of 0 milliseconds to ensure asynchronous behavior
   };
+  
 
   return (
     <section>
@@ -70,7 +77,7 @@ export const Text = () => {
             </div>
         </form>
 
-        {summary && <div className="summary">{summary}</div>}
+        {loading?(<div className="bg-gray-900 text-white px-6 py-4 rounded-md">Sammy is summarizing🤓...</div>):(summary && <div className="bg-gray-900 text-white px-6 py-4 rounded-md">{summary}</div>)}
 
     </section>
   );
