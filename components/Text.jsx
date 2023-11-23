@@ -12,6 +12,11 @@ export const Text = () => {
     setText(event.target.value);
   };
 
+  const handleClearText = () => {
+    setText('');
+    setSummary('');
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -65,14 +70,17 @@ export const Text = () => {
             </label>
             
             <div className='flex-end mx-3 mb-4 gap-4' >
-                <Link href='/' className='bg-red-500 text-white px-3 py-1 rounded-md' passHref>
-                        Cancel
-                </Link>
                 <button
                 type='submit'
-                className='bg-blue-500 text-white px-3 py-1 rounded-md'
+                className='bg-green-500 text-white px-3 py-1 rounded-md'
                 >
                     Summarize
+                </button>
+                <button 
+                className='bg-blue-500 text-white px-3 py-1 rounded-md'
+                onClick={handleClearText}
+                >
+                Clear
                 </button>
             </div>
         </form>
